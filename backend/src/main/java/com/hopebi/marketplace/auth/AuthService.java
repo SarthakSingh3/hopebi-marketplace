@@ -264,9 +264,12 @@ public class AuthService {
         // Dispatch real SMS via configured SMS gateway (Fast2SMS / Twilio) or log in dev
         smsService.sendOtpSms(phone, otp);
 
-        boolean isProd = "prod".equalsIgnoreCase(activeProfile) || "production".equalsIgnoreCase(activeProfile);
-        String returnedOtp = isProd ? null : otp;
-        return new OtpResponse(phone, "6-digit OTP dispatched to +91 " + phone, returnedOtp, isExisting);
+        boolean hasRealSms = smsService.isRealSmsConfigured();
+        String returnedOtp = hasRealSms ? null : otp;
+        String message = hasRealSms
+                ? ("6-digit OTP dispatched to +91 " + phone)
+                : ("Demo Mode OTP: " + otp + " (SMS gateway not configured)");
+        return new OtpResponse(phone, message, returnedOtp, isExisting);
     }
 
     @Transactional
@@ -274,8 +277,8 @@ public class AuthService {
         String phone = normalizePhone(request.getPhone());
         OtpRecord record = otpStorage.get(phone);
 
-        boolean isProd = "prod".equalsIgnoreCase(activeProfile) || "production".equalsIgnoreCase(activeProfile);
-        boolean devBypass = !isProd && "123456".equals(request.getOtp().trim());
+        boolean hasRealSms = smsService.isRealSmsConfigured();
+        boolean devBypass = !hasRealSms && "123456".equals(request.getOtp().trim());
 
         if (record == null && !devBypass) {
             throw new com.hopebi.marketplace.common.BadRequestException("No active OTP found for this number. Please request an OTP first.");

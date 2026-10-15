@@ -42,6 +42,10 @@ public class SmsService {
         this.restTemplate = new RestTemplate();
     }
 
+    public boolean isRealSmsConfigured() {
+        return smsEnabled && apiKey != null && !apiKey.trim().isEmpty();
+    }
+
     /**
      * Dispatches real SMS with OTP to the user's Indian mobile number.
      * 

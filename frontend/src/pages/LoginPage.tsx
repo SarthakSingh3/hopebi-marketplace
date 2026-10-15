@@ -197,9 +197,12 @@ export const LoginPage: React.FC = () => {
         const tokenClient = google.accounts.oauth2.initTokenClient({
           client_id: effectiveClientId,
           scope: 'email profile openid',
+          error_callback: () => {
+            setGoogleModalOpen(true);
+          },
           callback: async (tokenResponse: any) => {
             if (tokenResponse.error) {
-              setError('Google sign-in was cancelled or encountered an error.');
+              setGoogleModalOpen(true);
               return;
             }
             if (tokenResponse.access_token) {
@@ -228,6 +231,8 @@ export const LoginPage: React.FC = () => {
         return;
       } catch (err) {
         console.warn('Google Identity Services invocation error:', err);
+        setGoogleModalOpen(true);
+        return;
       }
     }
 
@@ -294,7 +299,8 @@ export const LoginPage: React.FC = () => {
       setResendTimer(30);
       setIsNewPhoneUser(!response.isExistingUser);
       if (response.otp) {
-        setSuccessNotice(`OTP sent successfully to +91 ${cleanedPhone}. Code: ${response.otp}`);
+        setSuccessNotice(`Demo OTP for +91 ${cleanedPhone} is: ${response.otp}. Auto-filled below — click Verify & Sign In to proceed!`);
+        setOtp(response.otp);
       } else {
         setSuccessNotice(`OTP dispatched via SMS to +91 ${cleanedPhone}. Please enter the 6-digit code received on your phone.`);
       }
@@ -423,9 +429,16 @@ export const LoginPage: React.FC = () => {
               </svg>
               <span>Continue with Google</span>
             </button>
-            <p className="text-[11px] text-center text-stone-400 mt-1.5">
-              1-click login with your Google account. Zero passwords required.
-            </p>
+            <div className="flex items-center justify-between text-[11px] text-stone-400 mt-2 px-1">
+              <span>Zero password required</span>
+              <button
+                type="button"
+                onClick={() => setGoogleModalOpen(true)}
+                className="text-amber-800 font-medium hover:underline cursor-pointer"
+              >
+                Instant Google Sign-in / Demo &rarr;
+              </button>
+            </div>
           </div>
 
           <div className="relative mb-5">
@@ -557,19 +570,15 @@ export const LoginPage: React.FC = () => {
                     </div>
 
                     <div className="mt-2 flex items-center justify-between text-xs">
-                      {/* Show test OTP chip only in local development */}
-                      {isDevMode ? (
-                        <button
-                          type="button"
-                          onClick={() => setOtp('123456')}
-                          className="text-[11px] bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-200/80 px-2.5 py-1 rounded-lg font-semibold flex items-center gap-1 cursor-pointer transition"
-                        >
-                          <span>🟢 Dev Helper: <strong>123456</strong></span>
-                          <span className="text-[10px] text-amber-700 underline">(Autofill)</span>
-                        </button>
-                      ) : (
-                        <span className="text-[11px] text-stone-400">Enter SMS code</span>
-                      )}
+                      {/* Show demo OTP autofill helper */}
+                      <button
+                        type="button"
+                        onClick={() => setOtp('123456')}
+                        className="text-[11px] bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-200/80 px-2.5 py-1 rounded-lg font-semibold flex items-center gap-1 cursor-pointer transition"
+                      >
+                        <span>Demo OTP: <strong>123456</strong></span>
+                        <span className="text-[10px] text-amber-700 underline">(Autofill)</span>
+                      </button>
 
                       {resendTimer > 0 ? (
                         <span className="text-[11px] text-stone-400">
@@ -1019,7 +1028,10 @@ export const LoginPage: React.FC = () => {
               {showClientConfig && (
                 <div className="mt-2 pt-2 border-t border-stone-200 space-y-2 text-xs animate-in fade-in">
                   <p className="text-[11px] text-stone-600 leading-relaxed">
-                    Paste your Google OAuth Web Client ID from <a href="https://console.cloud.google.com/apis/credentials" target="_blank" rel="noreferrer" className="text-blue-600 underline font-semibold">Google Cloud Console</a> to trigger Google's real live popup:
+                    Paste your Google OAuth Web Client ID from <a href="https://console.cloud.google.com/apis/credentials" target="_blank" rel="noreferrer" className="text-blue-600 underline font-semibold">Google Cloud Console</a>.
+                  </p>
+                  <p className="text-[11px] text-amber-800 bg-amber-50 p-2 rounded-lg border border-amber-200">
+                    💡 <strong>To fix Error 400 origin_mismatch:</strong> In Google Cloud Console &gt; Credentials &gt; OAuth 2.0 Client ID, add <code className="bg-amber-100 px-1 rounded font-mono text-[10px]">https://hopebi-frontend.onrender.com</code> under <strong>Authorized JavaScript origins</strong>.
                   </p>
                   <input
                     type="text"

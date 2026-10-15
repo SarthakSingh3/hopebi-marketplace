@@ -32,7 +32,7 @@ import { LocationModal } from './LocationModal';
 import { MegaSidebar } from './MegaSidebar';
 
 export const Navbar: React.FC = () => {
-  const { user, isAuthenticated, isSeller, isAdmin, logout, quickLoginAs } = useAuth();
+  const { user, isAuthenticated, isSeller, isAdmin, logout } = useAuth();
   const { itemCount, cart } = useCart();
   const { wishlistCount } = useWishlist();
   const navigate = useNavigate();
@@ -151,47 +151,21 @@ export const Navbar: React.FC = () => {
   return (
     <>
       <header className="sticky top-0 z-40 w-full shadow-lg">
-        {/* Top Notification & Demo Role Switcher Strip */}
-        <div className="bg-[#120f0d] text-stone-300 text-xs py-1.5 px-3 sm:px-6 flex flex-wrap justify-between items-center border-b border-amber-950/40">
-          <div className="flex items-center space-x-2">
-            <span className="bg-gradient-to-r from-amber-600 to-amber-700 text-white px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-wider uppercase shadow-xs">
-              Curated Indian Marketplace
+        {/* Top Notification Strip */}
+        <div className="bg-[#120f0d] text-stone-300 text-xs py-1.5 px-3 sm:px-6 flex justify-between items-center border-b border-amber-950/40">
+          <div className="flex items-center space-x-2 min-w-0">
+            <span className="bg-gradient-to-r from-amber-600 to-amber-700 text-white px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-wider uppercase shadow-xs shrink-0">
+              Curated Marketplace
             </span>
-            <span className="hidden md:inline text-[11px] text-stone-300">
-              ⚡ Free Express Delivery on ₹999+ | Direct from Regional Artisans & Master Forges
+            <span className="text-[11px] text-stone-300 truncate">
+              ⚡ Free Express Delivery on ₹999+ | Direct from Regional Artisans
             </span>
           </div>
 
-          {/* Quick Demo Switcher for Evaluation */}
-          <div className="flex items-center space-x-1.5 ml-auto text-[11px]">
-            <span className="text-stone-400 hidden lg:inline mr-1">Demo Quick Switch:</span>
-            <button
-              onClick={() => quickLoginAs('CUSTOMER')}
-              className={`px-2.5 py-0.5 rounded-full text-[10px] font-semibold transition cursor-pointer ${
-                user?.role === 'ROLE_CUSTOMER' ? 'bg-amber-500 text-stone-950 font-bold shadow-xs' : 'bg-stone-800 hover:bg-stone-700 text-stone-300'
-              }`}
-              title="Test as Customer (Ananya Iyer)"
-            >
-              Customer
-            </button>
-            <button
-              onClick={() => quickLoginAs('SELLER')}
-              className={`px-2.5 py-0.5 rounded-full text-[10px] font-semibold transition cursor-pointer ${
-                user?.role === 'ROLE_SELLER' ? 'bg-amber-500 text-stone-950 font-bold shadow-xs' : 'bg-stone-800 hover:bg-stone-700 text-stone-300'
-              }`}
-              title="Test as Seller (Moradabad Metalcrafts Guild)"
-            >
-              Seller
-            </button>
-            <button
-              onClick={() => quickLoginAs('ADMIN')}
-              className={`px-2.5 py-0.5 rounded-full text-[10px] font-semibold transition cursor-pointer ${
-                user?.role === 'ROLE_ADMIN' ? 'bg-amber-500 text-stone-950 font-bold shadow-xs' : 'bg-stone-800 hover:bg-stone-700 text-stone-300'
-              }`}
-              title="Test as Admin (Platform Admin)"
-            >
-              Admin
-            </button>
+          <div className="hidden sm:flex items-center space-x-3 text-[11px] text-stone-400 shrink-0">
+            <span>🇮🇳 Authentic Regional Guilds</span>
+            <span>•</span>
+            <span>Secure UPI / Cards / COD</span>
           </div>
         </div>
 
@@ -201,17 +175,17 @@ export const Navbar: React.FC = () => {
             {/* 1. Logo & Brand (Indian Luxury Boutique Style) */}
             <Link
               to="/"
-              className="flex items-center space-x-2.5 shrink-0 p-1 rounded-xl hover:bg-white/5 transition group"
+              className="flex items-center space-x-2 shrink-0 p-1 rounded-xl hover:bg-white/5 transition group"
               aria-label="HOPEBI Home"
             >
-              <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-amber-500 via-amber-600 to-amber-700 text-stone-950 flex items-center justify-center shadow-md font-serif text-lg font-black tracking-tight border border-amber-400/40 group-hover:scale-105 transition-transform">
+              <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-gradient-to-br from-amber-500 via-amber-600 to-amber-700 text-stone-950 flex items-center justify-center shadow-md font-serif text-base sm:text-lg font-black tracking-tight border border-amber-400/40 group-hover:scale-105 transition-transform">
                 H
               </div>
               <div className="flex flex-col">
-                <span className="font-serif text-xl sm:text-2xl font-black tracking-tight text-stone-50 leading-none">
-                  HOPEBI<span className="text-amber-400 font-sans text-xs ml-0.5 font-bold">.in</span>
+                <span className="font-serif text-lg sm:text-2xl font-black tracking-tight text-stone-50 leading-none">
+                  HOPEBI<span className="text-amber-400 font-sans text-[10px] sm:text-xs ml-0.5 font-bold">.in</span>
                 </span>
-                <span className="text-[9px] tracking-widest text-amber-300/90 uppercase font-bold block mt-0.5 leading-none">
+                <span className="text-[8px] sm:text-[9px] tracking-widest text-amber-300/90 uppercase font-bold block mt-0.5 leading-none">
                   Curated Indian Crafts
                 </span>
               </div>
@@ -408,66 +382,69 @@ export const Navbar: React.FC = () => {
               <span className="text-xs font-bold uppercase tracking-wider text-stone-200">IN (₹)</span>
             </div>
 
-            {/* 5. Watchlist Button with Live Count Badge */}
-            <Link
-              to="/wishlist"
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full hover:bg-white/10 transition text-stone-200 hover:text-white shrink-0 relative group"
-              aria-label="View Saved Watchlist"
-              title="Your Saved Watchlist"
-            >
-              <div className="relative">
-                <Heart className="w-6 h-6 text-stone-200 group-hover:text-red-400 group-hover:fill-red-400 transition" />
-                {wishlistCount > 0 && (
-                  <span className="absolute -top-1 -right-1.5 bg-red-600 text-white font-black text-[10px] w-4 h-4 rounded-full flex items-center justify-center shadow">
-                    {wishlistCount}
-                  </span>
-                )}
-              </div>
-              <div className="hidden lg:flex flex-col text-left">
-                <span className="text-[10px] text-stone-400 leading-none">Your</span>
-                <span className="text-xs font-bold text-white leading-tight">Watchlist</span>
-              </div>
-            </Link>
-
-            {/* 6. Account & Lists Dropdown with User Profile Picture */}
-            <div
-              className="relative shrink-0"
-              ref={accountMenuRef}
-              onMouseEnter={() => setIsAccountMenuOpen(true)}
-              onMouseLeave={() => setIsAccountMenuOpen(false)}
-            >
-              <button
-                onClick={() => setIsAccountMenuOpen(!isAccountMenuOpen)}
-                className="flex items-center gap-2 px-2.5 py-1.5 rounded-full hover:bg-white/10 text-left transition cursor-pointer"
+            {/* Action Group: Watchlist, Account, Cart, Mobile Search */}
+            <div className="flex items-center space-x-1 sm:space-x-2 shrink-0">
+              {/* 5. Watchlist Button with Live Count Badge */}
+              <Link
+                to="/wishlist"
+                className="flex items-center gap-1.5 p-1.5 sm:px-3 sm:py-1.5 rounded-full hover:bg-white/10 transition text-stone-200 hover:text-white shrink-0 relative group"
+                aria-label="View Saved Watchlist"
+                title="Your Saved Watchlist"
               >
-                {/* Profile Picture / Avatar */}
                 <div className="relative">
-                  {isAuthenticated && user?.avatarUrl ? (
-                    <img
-                      src={user.avatarUrl}
-                      alt={user.fullName}
-                      className="w-8 h-8 rounded-full object-cover border-2 border-amber-400 shadow-sm"
-                    />
-                  ) : (
-                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-amber-500 to-amber-700 text-stone-950 font-bold text-xs flex items-center justify-center border-2 border-amber-400/80 shadow-sm">
-                      {isAuthenticated && user?.fullName ? user.fullName.charAt(0).toUpperCase() : <UserIcon className="w-4 h-4 text-stone-950" />}
-                    </div>
-                  )}
-                  {isAuthenticated && (
-                    <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-emerald-500 border-2 border-[#171412] rounded-full" />
+                  <Heart className="w-5 h-5 sm:w-6 sm:h-6 text-stone-200 group-hover:text-red-400 group-hover:fill-red-400 transition" />
+                  {wishlistCount > 0 && (
+                    <span className="absolute -top-1 -right-1.5 bg-red-600 text-white font-black text-[10px] w-4 h-4 rounded-full flex items-center justify-center shadow">
+                      {wishlistCount}
+                    </span>
                   )}
                 </div>
+                <div className="hidden lg:flex flex-col text-left">
+                  <span className="text-[10px] text-stone-400 leading-none">Your</span>
+                  <span className="text-xs font-bold text-white leading-tight">Watchlist</span>
+                </div>
+              </Link>
 
-                <div className="overflow-hidden hidden sm:block">
-                  <p className="text-[10px] text-stone-400 leading-none truncate">
-                    Hello, {isAuthenticated && user?.fullName ? user.fullName.split(' ')[0] : 'Sign in'}
-                  </p>
-                  <p className="text-xs font-bold text-white leading-tight flex items-center gap-0.5">
-                    Account & Lists
-                    <ChevronDown className="w-3 h-3 text-stone-400 mt-0.5" />
-                  </p>
-                </div>
-              </button>
+              {/* 6. Account & Lists Dropdown with User Profile Picture */}
+              <div
+                className="relative shrink-0"
+                ref={accountMenuRef}
+                onMouseEnter={() => setIsAccountMenuOpen(true)}
+                onMouseLeave={() => setIsAccountMenuOpen(false)}
+              >
+                <button
+                  onClick={() => setIsAccountMenuOpen(!isAccountMenuOpen)}
+                  className="flex items-center gap-1.5 sm:gap-2 p-1.5 sm:px-2.5 sm:py-1.5 rounded-full hover:bg-white/10 text-left transition cursor-pointer"
+                  aria-label="Account menu"
+                >
+                  {/* Profile Picture / Avatar */}
+                  <div className="relative">
+                    {isAuthenticated && user?.avatarUrl ? (
+                      <img
+                        src={user.avatarUrl}
+                        alt={user.fullName}
+                        className="w-7 h-7 sm:w-8 sm:h-8 rounded-full object-cover border-2 border-amber-400 shadow-sm"
+                      />
+                    ) : (
+                      <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-gradient-to-br from-amber-500 to-amber-700 text-stone-950 font-bold text-xs flex items-center justify-center border-2 border-amber-400/80 shadow-sm">
+                        {isAuthenticated && user?.fullName ? user.fullName.charAt(0).toUpperCase() : <UserIcon className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-stone-950" />}
+                      </div>
+                    )}
+                    {isAuthenticated && (
+                      <span className="absolute bottom-0 right-0 w-2 h-2 sm:w-2.5 sm:h-2.5 bg-emerald-500 border-2 border-[#171412] rounded-full" />
+                    )}
+                  </div>
+
+                  <div className="overflow-hidden hidden sm:block">
+                    <p className="text-[10px] text-stone-400 leading-none truncate">
+                      Hello, {isAuthenticated && user?.fullName ? user.fullName.split(' ')[0] : 'Sign in'}
+                    </p>
+                    <p className="text-xs font-bold text-white leading-tight flex items-center gap-0.5">
+                      Account & Lists
+                      <ChevronDown className="w-3 h-3 text-stone-400 mt-0.5" />
+                    </p>
+                  </div>
+                </button>
 
               {/* Mega Dropdown Menu */}
               {isAccountMenuOpen && (
@@ -633,48 +610,49 @@ export const Navbar: React.FC = () => {
               )}
             </div>
 
-            {/* 7. Cart with Badge & Subtotal */}
-            <Link
-              to="/cart"
-              className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/30 transition shrink-0"
-              aria-label="View Shopping Cart"
-            >
-              <div className="relative">
-                <ShoppingBag className="w-6 h-6 text-amber-400" />
-                <span className="absolute -top-1 -right-1.5 bg-amber-500 text-stone-950 font-black text-[10px] w-4 h-4 rounded-full flex items-center justify-center shadow-md">
-                  {itemCount}
-                </span>
-              </div>
-              <div className="hidden md:flex flex-col text-left">
-                <span className="text-[10px] text-amber-300 font-bold leading-none">
-                  ₹{cart?.subtotal ? Math.round(cart.subtotal).toLocaleString('en-IN') : '0'}
-                </span>
-                <span className="text-xs font-bold text-white leading-tight">Cart</span>
-              </div>
-            </Link>
+              {/* 7. Cart with Badge & Subtotal */}
+              <Link
+                to="/cart"
+                className="flex items-center gap-1.5 sm:gap-2 p-1.5 sm:px-3 sm:py-1.5 rounded-full bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/30 transition shrink-0"
+                aria-label="View Shopping Cart"
+              >
+                <div className="relative">
+                  <ShoppingBag className="w-5 h-5 sm:w-6 sm:h-6 text-amber-400" />
+                  <span className="absolute -top-1 -right-1.5 bg-amber-500 text-stone-950 font-black text-[10px] w-4 h-4 rounded-full flex items-center justify-center shadow-md">
+                    {itemCount}
+                  </span>
+                </div>
+                <div className="hidden md:flex flex-col text-left">
+                  <span className="text-[10px] text-amber-300 font-bold leading-none">
+                    ₹{cart?.subtotal ? Math.round(cart.subtotal).toLocaleString('en-IN') : '0'}
+                  </span>
+                  <span className="text-xs font-bold text-white leading-tight">Cart</span>
+                </div>
+              </Link>
 
-            {/* Mobile Search Toggle */}
-            <button
-              onClick={() => setMobileSearchOpen(!mobileSearchOpen)}
-              className="sm:hidden p-1.5 text-stone-300 hover:text-white"
-              aria-label="Toggle search"
-            >
-              <Search className="w-5 h-5" />
-            </button>
+              {/* Mobile Search Toggle */}
+              <button
+                onClick={() => setMobileSearchOpen(!mobileSearchOpen)}
+                className="sm:hidden p-2 text-stone-300 hover:text-white rounded-full hover:bg-white/10 transition shrink-0"
+                aria-label="Toggle search"
+              >
+                <Search className="w-5 h-5" />
+              </button>
+            </div>
           </div>
 
           {/* Mobile Search Bar Dropdown */}
           {mobileSearchOpen && (
             <div className="sm:hidden px-3 pb-3 pt-1 border-t border-amber-950/40 space-y-2">
-              <form onSubmit={handleSearch} className="flex rounded-full overflow-hidden bg-white border border-stone-300">
+              <form onSubmit={handleSearch} className="flex rounded-full overflow-hidden bg-white border border-stone-300 shadow-inner">
                 <input
                   type="text"
                   placeholder="Search brass, teas, handloom..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full bg-white text-stone-900 text-sm px-4 py-2 focus:outline-none"
+                  className="w-full min-w-0 bg-white text-stone-900 text-sm px-4 py-2 focus:outline-none"
                 />
-                <button type="submit" className="bg-amber-500 text-stone-950 px-4 py-2 font-bold text-xs">
+                <button type="submit" className="shrink-0 bg-amber-500 text-stone-950 px-4 py-2 font-bold text-xs hover:bg-amber-600 transition">
                   Go
                 </button>
               </form>

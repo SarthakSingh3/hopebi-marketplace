@@ -8,6 +8,10 @@ export const RegisterPage: React.FC = () => {
   const { register, loginWithGoogle } = useAuth();
   const navigate = useNavigate();
 
+  // Environment detection: Check if app is in production mode
+  const isProduction = import.meta.env.PROD;
+  const isDevMode = !isProduction || import.meta.env.VITE_ENABLE_DEV_SANDBOX === 'true';
+
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
@@ -72,9 +76,12 @@ export const RegisterPage: React.FC = () => {
         const tokenClient = google.accounts.oauth2.initTokenClient({
           client_id: effectiveClientId,
           scope: 'email profile openid',
+          error_callback: () => {
+            setGoogleModalOpen(true);
+          },
           callback: async (tokenResponse: any) => {
             if (tokenResponse.error) {
-              setError('Google registration was cancelled.');
+              setGoogleModalOpen(true);
               return;
             }
             if (tokenResponse.access_token) {
@@ -102,6 +109,8 @@ export const RegisterPage: React.FC = () => {
         return;
       } catch (err) {
         console.warn('Google Identity Services invocation error:', err);
+        setGoogleModalOpen(true);
+        return;
       }
     }
 
@@ -239,9 +248,16 @@ export const RegisterPage: React.FC = () => {
               </svg>
               <span>1-Click Sign up with Google</span>
             </button>
-            <p className="text-[11px] text-center text-stone-400 mt-1.5">
-              Instantly connect with your Gmail. Zero password hassle.
-            </p>
+            <div className="flex items-center justify-between text-[11px] text-stone-400 mt-2 px-1">
+              <span>Zero password hassle</span>
+              <button
+                type="button"
+                onClick={() => setGoogleModalOpen(true)}
+                className="text-amber-800 font-medium hover:underline cursor-pointer"
+              >
+                Instant Google Sign-in / Demo &rarr;
+              </button>
+            </div>
           </div>
 
           <div className="relative mb-5">
@@ -255,29 +271,31 @@ export const RegisterPage: React.FC = () => {
             </div>
           </div>
 
-          {/* Quick Fill Testing Helper */}
-          <div className="mb-5 p-2.5 bg-amber-50/60 border border-amber-200/80 rounded-2xl flex items-center justify-between text-xs">
-            <span className="text-stone-700 flex items-center gap-1 font-medium">
-              <Sparkles className="w-3.5 h-3.5 text-amber-700" />
-              Quick fill test:
-            </span>
-            <div className="flex gap-2">
-              <button
-                type="button"
-                onClick={() => handleQuickFill('ROLE_CUSTOMER')}
-                className="text-[11px] bg-white border border-stone-200 px-2 py-0.5 rounded-lg text-amber-900 font-semibold hover:border-amber-600 transition cursor-pointer"
-              >
-                Customer
-              </button>
-              <button
-                type="button"
-                onClick={() => handleQuickFill('ROLE_SELLER')}
-                className="text-[11px] bg-white border border-stone-200 px-2 py-0.5 rounded-lg text-emerald-900 font-semibold hover:border-emerald-600 transition cursor-pointer"
-              >
-                Seller
-              </button>
+          {/* Quick Fill Testing Helper (Development Only) */}
+          {isDevMode && (
+            <div className="mb-5 p-2.5 bg-amber-50/60 border border-amber-200/80 rounded-2xl flex items-center justify-between text-xs">
+              <span className="text-stone-700 flex items-center gap-1 font-medium">
+                <Sparkles className="w-3.5 h-3.5 text-amber-700" />
+                Quick fill test:
+              </span>
+              <div className="flex gap-2">
+                <button
+                  type="button"
+                  onClick={() => handleQuickFill('ROLE_CUSTOMER')}
+                  className="text-[11px] bg-white border border-stone-200 px-2 py-0.5 rounded-lg text-amber-900 font-semibold hover:border-amber-600 transition cursor-pointer"
+                >
+                  Customer
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleQuickFill('ROLE_SELLER')}
+                  className="text-[11px] bg-white border border-stone-200 px-2 py-0.5 rounded-lg text-emerald-900 font-semibold hover:border-emerald-600 transition cursor-pointer"
+                >
+                  Seller
+                </button>
+              </div>
             </div>
-          </div>
+          )}
 
           <form className="space-y-4" onSubmit={handleSubmit}>
             {/* Account Role Selector */}
