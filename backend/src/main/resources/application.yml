@@ -1,0 +1,62 @@
+server:
+  port: ${PORT:8080}
+  servlet:
+    context-path: /
+
+spring:
+  application:
+    name: hopebi-marketplace
+  profiles:
+    active: dev
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: false
+        dialect: org.hibernate.dialect.H2Dialect
+
+  datasource:
+    url: jdbc:h2:file:./data/hopebidb;AUTO_SERVER=TRUE;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE;DEFAULT_NULL_ORDERING=HIGH
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: 
+
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+      settings:
+        web-allow-others: false
+
+  flyway:
+    enabled: false # Enabled in prod/postgres profile
+
+hopebi:
+  app:
+    name: "HOPEBI"
+    tagline: "Curated Indian B2C Marketplace"
+    currency: "INR"
+    currency-symbol: "₹"
+    default-commission-percent: 5.0
+    jwt:
+      secret: "404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970" # 256-bit secure secret key
+      expiration-ms: 86400000 # 24 hours
+    admin:
+      email: "admin@hopebi.com"
+      password: "AdminPassword123!"
+      name: "HOPEBI Administrator"
+    payment:
+      test-mode: true
+      provider: "TEST_SIMULATOR"
+    sms:
+      enabled: ${SMS_ENABLED:false}
+      provider: ${SMS_PROVIDER:FAST2SMS}
+      api-key: ${SMS_API_KEY:}
+      sender-id: "HOPEBI"

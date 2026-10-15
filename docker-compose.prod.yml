@@ -1,0 +1,56 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: hopebi-postgres-prod
+    restart: always
+    environment:
+      POSTGRES_DB: hopebidb
+      POSTGRES_USER: ${POSTGRES_USER:-hopebi_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-hopebi_pass}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_prod_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-hopebi_user} -d hopebidb"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: hopebi-backend-prod
+    restart: always
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/hopebidb
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER:-hopebi_user}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD:-hopebi_pass}
+      PORT: 8080
+      HOPEBI_JWT_SECRET: ${HOPEBI_JWT_SECRET:-404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970}
+    ports:
+      - "8080:8080"
+    volumes:
+      - backend_uploads:/app/uploads
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: hopebi-frontend-prod
+    restart: always
+    depends_on:
+      - backend
+    ports:
+      - "80:80"
+
+volumes:
+  postgres_prod_data:
+  backend_uploads:
