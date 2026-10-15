@@ -18,8 +18,9 @@ services:
         generateValue: true
 
   # 2. React Vite Frontend Static Site
-  - type: static
+  - type: web
     name: hopebi-frontend
+    runtime: static
     buildCommand: cd frontend && npm install && npm run build
     staticPublishPath: ./frontend/dist
     routes:
