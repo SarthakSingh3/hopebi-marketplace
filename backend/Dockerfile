@@ -16,11 +16,14 @@ WORKDIR /app
 
 # Create non-root user
 RUN addgroup -S hopebi && adduser -S hopebi -G hopebi
-USER hopebi
 
 COPY --from=builder /app/target/marketplace-backend-*.jar app.jar
+COPY entrypoint.sh entrypoint.sh
+RUN chmod +x entrypoint.sh && chown -R hopebi:hopebi /app
+
+USER hopebi
 
 ENV PORT=8080
 EXPOSE 8080
 
-ENTRYPOINT ["java", "-Djava.security.egd=file:/dev/./urandom", "-jar", "app.jar"]
+ENTRYPOINT ["/app/entrypoint.sh"]

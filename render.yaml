@@ -14,6 +14,26 @@ services:
         fromDatabase:
           name: hopebi-postgres
           property: connectionString
+      - key: DB_HOST
+        fromDatabase:
+          name: hopebi-postgres
+          property: host
+      - key: DB_PORT
+        fromDatabase:
+          name: hopebi-postgres
+          property: port
+      - key: DB_NAME
+        fromDatabase:
+          name: hopebi-postgres
+          property: database
+      - key: DB_USER
+        fromDatabase:
+          name: hopebi-postgres
+          property: user
+      - key: DB_PASSWORD
+        fromDatabase:
+          name: hopebi-postgres
+          property: password
       - key: HOPEBI_JWT_SECRET
         generateValue: true
 
