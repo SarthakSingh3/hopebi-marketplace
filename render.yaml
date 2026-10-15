@@ -10,10 +10,6 @@ services:
     envVars:
       - key: SPRING_PROFILES_ACTIVE
         value: prod
-      - key: SPRING_DATASOURCE_URL
-        fromDatabase:
-          name: hopebi-postgres
-          property: connectionString
       - key: DB_HOST
         fromDatabase:
           name: hopebi-postgres
