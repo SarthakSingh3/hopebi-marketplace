@@ -113,12 +113,14 @@ public class SecurityConfig {
         configuration.setAllowedOriginPatterns(List.of(
             "http://localhost:*",
             "http://127.0.0.1:*",
-            "https://*.vercel.app",
+            "https://*.onrender.com",
             "https://*.render.com",
+            "https://*.vercel.app",
             "https://*.railway.app",
             "https://*.netlify.app",
             "https://*.hopebi.com",
-            "https://hopebi.com"
+            "https://hopebi.com",
+            "https://*"
         ));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));

@@ -1,6 +1,14 @@
 import axios from 'axios';
 
-let rawBase = (import.meta.env.VITE_API_URL || '').trim();
+let rawBase = (import.meta.env.VITE_API_URL || import.meta.env.VITE_API_BASE_URL || '').trim();
+
+// Automatic backend URL resolution on Render
+if (!rawBase || rawBase === '/api/v1') {
+  if (typeof window !== 'undefined' && window.location.hostname.includes('onrender.com')) {
+    rawBase = 'https://hopebi-backend.onrender.com';
+  }
+}
+
 if (rawBase && !rawBase.startsWith('http://') && !rawBase.startsWith('https://')) {
   rawBase = `https://${rawBase}`;
 }

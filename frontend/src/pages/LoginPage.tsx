@@ -268,13 +268,17 @@ export const LoginPage: React.FC = () => {
         handleAuthSuccess(user);
       }
     } catch (err: unknown) {
-      const e = err as { response?: { data?: { message?: string } } };
-      setError(
-        e.response?.data?.message ||
-          (emailMode === 'signin'
-            ? 'Invalid email or password. Please verify your credentials and try again.'
-            : 'Registration failed. The email address might already be in use.')
-      );
+      const e = err as { response?: { status?: number; data?: { message?: string } }; message?: string };
+      const serverMessage = e.response?.data?.message;
+      if (serverMessage) {
+        setError(serverMessage);
+      } else if (e.response?.status === 409) {
+        setError('The email address is already registered. Please sign in instead.');
+      } else if (emailMode === 'signin') {
+        setError(e.response?.status === 401 ? 'Invalid email or password. Please verify your credentials and try again.' : (e.message || 'Unable to sign in. Please verify your credentials.'));
+      } else {
+        setError(e.message || 'Registration could not be completed. Please check your network or try again.');
+      }
     } finally {
       setLoading(false);
     }
