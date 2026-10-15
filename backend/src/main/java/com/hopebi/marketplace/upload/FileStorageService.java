@@ -18,7 +18,7 @@ import java.util.UUID;
 @Service
 public class FileStorageService {
 
-    private final Path fileStorageLocation;
+    private Path fileStorageLocation;
     private static final List<String> ALLOWED_IMAGE_TYPES = Arrays.asList(
             "image/jpeg", "image/png", "image/webp", "image/gif", "image/jpg"
     );
@@ -32,7 +32,13 @@ public class FileStorageService {
         try {
             Files.createDirectories(this.fileStorageLocation);
         } catch (Exception ex) {
-            throw new RuntimeException("Could not create directory for storing uploaded files.", ex);
+            try {
+                Path fallback = Paths.get(System.getProperty("java.io.tmpdir"), "hopebi_uploads").toAbsolutePath().normalize();
+                Files.createDirectories(fallback);
+                this.fileStorageLocation = fallback;
+            } catch (Exception fallbackEx) {
+                throw new RuntimeException("Could not create directory for storing uploaded files.", ex);
+            }
         }
     }
 

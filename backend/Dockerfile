@@ -10,8 +10,11 @@ RUN mvn clean package -DskipTests -B
 FROM eclipse-temurin:21-jre-alpine
 WORKDIR /app
 
-# Create non-root user
-RUN addgroup -S hopebi && adduser -S hopebi -G hopebi
+# Create non-root user and pre-create uploads folder with full permissions
+RUN addgroup -S hopebi && adduser -S hopebi -G hopebi \
+    && mkdir -p /app/uploads \
+    && chown -R hopebi:hopebi /app
+
 USER hopebi
 
 COPY --from=builder --chown=hopebi:hopebi /app/target/marketplace-backend-*.jar app.jar
